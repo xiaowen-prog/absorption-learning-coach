@@ -304,7 +304,14 @@
       padding: 12px 6px;
       text-align: center;
       position: relative;
+      transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+      animation: loopStepPulse 7.5s ease-in-out infinite;
     }
+    .loop-step:nth-child(1) { animation-delay: 0s; }
+    .loop-step:nth-child(2) { animation-delay: 1.5s; }
+    .loop-step:nth-child(3) { animation-delay: 3s; }
+    .loop-step:nth-child(4) { animation-delay: 4.5s; }
+    .loop-step:nth-child(5) { animation-delay: 6s; }
     .loop-step .num {
       display: inline-flex;
       width: 28px;
@@ -317,7 +324,14 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 8px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: loopNumPulse 7.5s ease-in-out infinite;
     }
+    .loop-step:nth-child(1) .num { animation-delay: 0s; }
+    .loop-step:nth-child(2) .num { animation-delay: 1.5s; }
+    .loop-step:nth-child(3) .num { animation-delay: 3s; }
+    .loop-step:nth-child(4) .num { animation-delay: 4.5s; }
+    .loop-step:nth-child(5) .num { animation-delay: 6s; }
     .loop-step .label {
       font-size: 12px;
       font-weight: 600;
@@ -331,12 +345,28 @@
       color: var(--text-tertiary);
       margin-top: 2px;
     }
+    .loop-progress {
+      position: relative;
+      height: 3px;
+      margin: 20px 12px 0;
+      background: var(--border);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .loop-progress-bar {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 20%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.35), var(--accent));
+      animation: loopProgress 7.5s linear infinite;
+    }
     .loop-flow {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      margin-top: 18px;
+      margin-top: 14px;
       font-size: 12px;
       font-weight: 500;
       color: var(--text-tertiary);
@@ -346,10 +376,50 @@
       height: 6px;
       border-radius: 50%;
       background: var(--accent);
-      opacity: 0.5;
+      opacity: 0.35;
+      animation: loopDotPulse 7.5s ease-in-out infinite;
     }
-    .loop-flow .dot:nth-child(3) { opacity: 0.75; }
-    .loop-flow .dot:nth-child(5) { opacity: 1; }
+    .loop-flow .dot:nth-child(1) { animation-delay: 0s; }
+    .loop-flow .dot:nth-child(3) { animation-delay: 2.5s; }
+    .loop-flow .dot:nth-child(5) { animation-delay: 5s; }
+
+    @keyframes loopStepPulse {
+      0%, 18%, 100% {
+        border-color: var(--step-border);
+        background: var(--bg);
+        box-shadow: none;
+        transform: translateY(0);
+      }
+      4%, 14% {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: 0 0 0 4px var(--accent-ring), 0 10px 22px rgba(var(--accent-rgb), 0.16);
+        transform: translateY(-3px);
+      }
+    }
+    @keyframes loopNumPulse {
+      0%, 18%, 100% {
+        transform: scale(1);
+        box-shadow: none;
+      }
+      4%, 14% {
+        transform: scale(1.12);
+        box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.22);
+      }
+    }
+    @keyframes loopProgress {
+      0% { left: 0%; width: 18%; }
+      20% { left: 20%; width: 18%; }
+      40% { left: 40%; width: 18%; }
+      60% { left: 60%; width: 18%; }
+      80% { left: 80%; width: 18%; }
+      100% { left: 100%; width: 0%; }
+    }
+    @keyframes loopDotPulse {
+      0%, 100% { opacity: 0.35; transform: scale(1); }
+      10%, 20% { opacity: 1; transform: scale(1.35); }
+      30% { opacity: 0.35; transform: scale(1); }
+    }
 
     /* Problem */
     .problem-item {
@@ -572,6 +642,21 @@
         opacity: 1;
         transform: none;
       }
+      .loop-step,
+      .loop-step .num,
+      .loop-progress-bar,
+      .loop-flow .dot {
+        animation: none !important;
+      }
+      .loop-step:nth-child(3) {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+      .loop-progress-bar {
+        left: 40%;
+        width: 18%;
+      }
     }
 
     @media (max-width: 900px) {
@@ -660,6 +745,7 @@
             <div class="label">反驳<span class="en">Rebuttal</span></div>
           </div>
         </div>
+        <div class="loop-progress" aria-hidden="true"><div class="loop-progress-bar"></div></div>
         <div class="loop-flow">
           <span class="dot"></span>
           <span>预测</span>
