@@ -467,20 +467,117 @@
       transform-origin: center;
     }
 
-    .spotlight-follow {
-      position: absolute;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1;
-      background: radial-gradient(circle, rgba(91, 91, 214, 0.16), transparent 70%);
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      mix-blend-mode: multiply;
+
+
+    /* Evervault spotlight (Evervault × Codrops) */
+    .evervault {
+      --x: 50%;
+      --y: 50%;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #12131c;
+      aspect-ratio: 1 / 1;
+      max-height: 360px;
+      margin: 0 auto;
+      isolation: isolate;
+      cursor: crosshair;
     }
-    .hero-visual.is-hot .spotlight-follow { opacity: 1; }
+    .evervault-deco {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      padding: 6px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      line-height: 1.15;
+      word-break: break-all;
+      color: rgba(255,255,255,0.95);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+      user-select: none;
+      -webkit-mask-image: radial-gradient(190px circle at var(--x) var(--y), #000 18%, rgba(0,0,0,0.3) 42%, transparent 72%);
+      mask-image: radial-gradient(190px circle at var(--x) var(--y), #000 18%, rgba(0,0,0,0.3) 42%, transparent 72%);
+    }
+    .evervault.is-active .evervault-deco { opacity: 1; }
+    .evervault::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at var(--x) var(--y),
+        rgba(18,19,28,0.1) 0%,
+        rgba(91,91,214,0.55) 26%,
+        rgba(142,100,255,0.8) 46%,
+        rgba(47,158,116,0.4) 60%,
+        rgba(18,19,28,0.95) 78%
+      );
+      mix-blend-mode: color-dodge;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .evervault.is-active::after { opacity: 1; }
+    .evervault-stage {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+    .evervault-stage svg {
+      width: 90%;
+      height: 90%;
+      display: block;
+      overflow: visible;
+      filter: drop-shadow(0 10px 28px rgba(0,0,0,0.4));
+    }
+    .evervault .orbit-ring { stroke: rgba(255,255,255,0.22); }
+    .evervault .orbit-ring.r2 { stroke: rgba(180,180,255,0.38); }
+    .evervault .orbit-ring.r3 { stroke: rgba(255,255,255,0.12); }
+    .evervault .orbit-node { fill: rgba(255,255,255,0.96); stroke: #a5a5f5; }
+    .evervault .orbit-node.is-lit { fill: #5b5bd6; stroke: #fff; }
+    .evervault .orbit-node-num { fill: #5b5bd6; }
+    .evervault .orbit-node-group.is-lit .orbit-node-num { fill: #fff; }
+    .evervault .orbit-node-label { fill: rgba(255,255,255,0.92); }
+    .evervault .orbit-node-en { fill: rgba(255,255,255,0.45); }
+    .evervault .orbit-traveler { fill: #fff; stroke: #c4c4ff; }
+    .evervault .orbit-traveler-halo { fill: rgba(165,165,245,0.35); }
+
+    .magnetic-wrap {
+      display: inline-flex;
+      padding: 28px;
+      margin: -28px;
+      border-radius: 9999px;
+      touch-action: manipulation;
+    }
+    .btn-magnetic {
+      will-change: transform;
+      transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-magnetic .btn-label {
+      display: inline-block;
+      will-change: transform;
+      transition: transform 0.18s cubic-bezier(.2,.8,.2,1);
+      position: relative;
+      z-index: 1;
+    }
+    .btn-magnetic .btn-shine {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      background: radial-gradient(120px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.38), transparent 55%);
+    }
+    .btn-magnetic.is-hot .btn-shine { opacity: 1; }
 
     @keyframes orbitSpin {
       to { transform: rotate(360deg); }
@@ -726,7 +823,9 @@
       .orbit-traveler-halo {
         animation: none !important;
       }
-      .spotlight-follow { display: none; }
+      .evervault-deco,
+      .evervault::after { opacity: 0 !important; }
+      .magnetic-wrap, .btn-magnetic, .btn-magnetic .btn-label { transform: none !important; }
     }
 
     @media (max-width: 900px) {
@@ -739,7 +838,7 @@
     @media (max-width: 600px) {
       body { font-size: 15px; }
       .section { padding: 48px 0; }
-      .orbit-stage { max-height: 300px; }
+      .evervault { max-height: 300px; }
       .nav-links a:not(.nav-priority) { display: none; }
       .nav-links { gap: 4px; }
       .hero-actions { flex-direction: column; width: 100%; }
@@ -791,15 +890,18 @@
           给 AI 导师的可复用教练配方：用闭卷回忆、场景迁移与疲劳降档，最大化文章与视频的<strong style="color: var(--text); font-weight: 600;">吸收</strong>，而不是堆阅读量或倾倒答案。
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">查看 GitHub</a>
+          <span class="magnetic-wrap" data-magnetic>
+            <a class="btn btn-primary btn-magnetic" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer"><span class="btn-shine" aria-hidden="true"></span><span class="btn-label">查看 GitHub</span></a>
+          </span>
           <a class="btn btn-secondary" href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/skills/absorption-learning-coach/SKILL.md" target="_blank" rel="noopener noreferrer">打开 SKILL.md</a>
         </div>
       </div>
       <div class="hero-visual reveal" id="orbit-card" aria-label="五步吸收环示意">
-        <div class="spotlight-follow" id="orbit-spot" aria-hidden="true"></div>
-        <div class="hero-visual-title">五步吸收环 · 知识沿轨道被吸收</div>
-        <div class="orbit-stage">
-          <svg viewBox="-8 -8 416 416" role="img" aria-labelledby="orbit-title">
+        <div class="hero-visual-title">鼠标移入探索 · Evervault 式聚光吸收</div>
+        <div class="evervault" id="evervault" style="--x:50%;--y:50%;">
+          <div class="evervault-deco" id="evervault-deco" aria-hidden="true"></div>
+          <div class="evervault-stage">
+            <svg viewBox="-8 -8 416 416" role="img" aria-labelledby="orbit-title">
             <title id="orbit-title">吸收环：拆解、价值、闭卷、迁移、反驳</title>
             <defs>
               <radialGradient id="coreGrad" cx="50%" cy="40%" r="60%">
@@ -874,6 +976,7 @@
               <circle class="orbit-traveler" cx="0" cy="0" r="6"/>
             </g>
           </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -1153,23 +1256,20 @@
         sections.forEach(function (s) { sio.observe(s); });
       }
 
-      /* Orbital traveler + soft spotlight (premium hero highlight) */
+      /* Absorption orbit traveler */
       var card = document.getElementById('orbit-card');
       var traveler = document.getElementById('orbit-traveler');
-      var spot = document.getElementById('orbit-spot');
       var nodes = card ? card.querySelectorAll('.orbit-node-group') : [];
-      if (card && traveler && !reduce) {
+      if (traveler && !reduce) {
         var cx = 200, cy = 200, R = 132;
         var angles = [-Math.PI / 2];
         for (var k = 1; k < 5; k++) angles.push(-Math.PI / 2 + k * (Math.PI * 2 / 5));
-        var start = performance.now();
+        var t0 = performance.now();
         var period = 8000;
-        function tick(now) {
-          var t = ((now - start) % period) / period;
+        (function tick(now) {
+          var t = ((now - t0) % period) / period;
           var ang = -Math.PI / 2 + t * Math.PI * 2;
-          var x = cx + Math.cos(ang) * R;
-          var y = cy + Math.sin(ang) * R;
-          traveler.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+          traveler.setAttribute('transform', 'translate(' + (cx + Math.cos(ang) * R) + ',' + (cy + Math.sin(ang) * R) + ')');
           var nearest = 0, best = 99;
           for (var i = 0; i < angles.length; i++) {
             var d = Math.abs(((ang - angles[i] + Math.PI) % (Math.PI * 2)) - Math.PI);
@@ -1182,18 +1282,7 @@
             if (c) c.classList.toggle('is-lit', on);
           });
           requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-
-        card.addEventListener('pointermove', function (e) {
-          var b = card.getBoundingClientRect();
-          spot.style.left = (e.clientX - b.left) + 'px';
-          spot.style.top = (e.clientY - b.top) + 'px';
-          card.classList.add('is-hot');
-        });
-        card.addEventListener('pointerleave', function () {
-          card.classList.remove('is-hot');
-        });
+        })(t0);
       } else if (traveler) {
         traveler.setAttribute('transform', 'translate(200,68)');
         if (nodes[0]) {
@@ -1202,6 +1291,73 @@
           if (c0) c0.classList.add('is-lit');
         }
       }
+
+      /* Evervault / Codrops gradient-mask spotlight */
+      var ev = document.getElementById('evervault');
+      var deco = document.getElementById('evervault-deco');
+      if (ev && deco && !reduce && window.matchMedia('(pointer:fine)').matches) {
+        var vocab = '吸收闭卷迁移反驳拆解价值缺口回忆判断SplitValueRecallTransferRebuttalEvalABCDEF0123456789';
+        function fillDeco() {
+          var s = '', n = 2400;
+          for (var i = 0; i < n; i++) s += vocab.charAt((Math.random() * vocab.length) | 0);
+          deco.textContent = s;
+        }
+        fillDeco();
+        var rx = 0.5, ry = 0.5, tx = 0.5, ty = 0.5, raf = 0, hovering = false;
+        function lerp(a, b, n) { return (1 - n) * a + n * b; }
+        function loop() {
+          raf = 0;
+          rx = lerp(rx, tx, 0.14);
+          ry = lerp(ry, ty, 0.14);
+          ev.style.setProperty('--x', (rx * 100).toFixed(2) + '%');
+          ev.style.setProperty('--y', (ry * 100).toFixed(2) + '%');
+          if (hovering) {
+            if (Math.random() < 0.4) fillDeco();
+            raf = requestAnimationFrame(loop);
+          }
+        }
+        ev.addEventListener('pointerenter', function () {
+          hovering = true;
+          ev.classList.add('is-active');
+          if (!raf) raf = requestAnimationFrame(loop);
+        });
+        ev.addEventListener('pointermove', function (e) {
+          var b = ev.getBoundingClientRect();
+          tx = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width));
+          ty = Math.min(1, Math.max(0, (e.clientY - b.top) / b.height));
+        });
+        ev.addEventListener('pointerleave', function () {
+          hovering = false;
+          ev.classList.remove('is-active');
+          tx = 0.5; ty = 0.5;
+        });
+      }
+
+      /* Magnetic CTA (Awwwards-style) */
+      document.querySelectorAll('[data-magnetic]').forEach(function (wrap) {
+        var btn = wrap.querySelector('.btn-magnetic');
+        if (!btn || reduce || !window.matchMedia('(pointer:fine)').matches) return;
+        var label = btn.querySelector('.btn-label');
+        var shine = btn.querySelector('.btn-shine');
+        wrap.addEventListener('pointermove', function (e) {
+          var r = wrap.getBoundingClientRect();
+          var x = e.clientX - r.left - r.width / 2;
+          var y = e.clientY - r.top - r.height / 2;
+          btn.style.transform = 'translate(' + (x * 0.3) + 'px,' + (y * 0.3) + 'px)';
+          if (label) label.style.transform = 'translate(' + (x * 0.14) + 'px,' + (y * 0.14) + 'px)';
+          if (shine) {
+            var br = btn.getBoundingClientRect();
+            shine.style.setProperty('--mx', (e.clientX - br.left) + 'px');
+            shine.style.setProperty('--my', (e.clientY - br.top) + 'px');
+            btn.classList.add('is-hot');
+          }
+        });
+        wrap.addEventListener('pointerleave', function () {
+          btn.style.transform = '';
+          if (label) label.style.transform = '';
+          btn.classList.remove('is-hot');
+        });
+      });
     })();
   </script>
 
