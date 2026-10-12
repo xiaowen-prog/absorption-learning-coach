@@ -276,12 +276,77 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+    /* Hero atmospheric mesh */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hero-mesh {
+      position: absolute;
+      inset: -20% -10%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-mesh .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(64px);
+      opacity: 0.55;
+      will-change: transform;
+    }
+    .hero-mesh .blob-a {
+      width: 48%;
+      height: 58%;
+      left: -8%;
+      top: -12%;
+      background: radial-gradient(circle, rgba(91, 91, 214, 0.45), transparent 70%);
+      animation: meshDriftA 22s ease-in-out infinite alternate;
+    }
+    .hero-mesh .blob-b {
+      width: 42%;
+      height: 50%;
+      right: -6%;
+      top: 8%;
+      background: radial-gradient(circle, rgba(120, 140, 255, 0.38), transparent 70%);
+      animation: meshDriftB 28s ease-in-out infinite alternate;
+    }
+    .hero-mesh .blob-c {
+      width: 36%;
+      height: 40%;
+      left: 32%;
+      bottom: -18%;
+      background: radial-gradient(circle, rgba(47, 158, 116, 0.18), transparent 70%);
+      animation: meshDriftC 26s ease-in-out infinite alternate;
+    }
+    @keyframes meshDriftA {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 10%) scale(1.08); }
+    }
+    @keyframes meshDriftB {
+      0% { transform: translate(0, 0) scale(1.05); }
+      100% { transform: translate(-10%, 6%) scale(0.95); }
+    }
+    @keyframes meshDriftC {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(6%, -8%) scale(1.1); }
+    }
+
+    .hero > .container { position: relative; z-index: 1; }
+
     .hero-visual {
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.72);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px 20px;
-      box-shadow: 0 8px 24px rgba(var(--text-rgb), 0.06);
+      border-radius: 24px;
+      padding: 20px 16px 16px;
+      box-shadow:
+        0 1px 2px rgba(var(--text-rgb), 0.04),
+        0 24px 48px rgba(var(--accent-rgb), 0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
     }
     .hero-visual-title {
       text-align: center;
@@ -289,136 +354,147 @@
       font-weight: 600;
       color: var(--text-tertiary);
       letter-spacing: 0.04em;
-      margin-bottom: 20px;
-    }
-
-    .loop-diagram {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-    .loop-step {
-      background: var(--bg);
-      border: 1.5px solid var(--step-border);
-      border-radius: 12px;
-      padding: 12px 6px;
-      text-align: center;
-      position: relative;
-      transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-      animation: loopStepPulse 7.5s ease-in-out infinite;
-    }
-    .loop-step:nth-child(1) { animation-delay: 0s; }
-    .loop-step:nth-child(2) { animation-delay: 1.5s; }
-    .loop-step:nth-child(3) { animation-delay: 3s; }
-    .loop-step:nth-child(4) { animation-delay: 4.5s; }
-    .loop-step:nth-child(5) { animation-delay: 6s; }
-    .loop-step .num {
-      display: inline-flex;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      align-items: center;
-      justify-content: center;
       margin-bottom: 8px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      animation: loopNumPulse 7.5s ease-in-out infinite;
-    }
-    .loop-step:nth-child(1) .num { animation-delay: 0s; }
-    .loop-step:nth-child(2) .num { animation-delay: 1.5s; }
-    .loop-step:nth-child(3) .num { animation-delay: 3s; }
-    .loop-step:nth-child(4) .num { animation-delay: 4.5s; }
-    .loop-step:nth-child(5) .num { animation-delay: 6s; }
-    .loop-step .label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.35;
-    }
-    .loop-step .en {
-      display: block;
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      margin-top: 2px;
-    }
-    .loop-progress {
       position: relative;
-      height: 3px;
-      margin: 20px 12px 0;
-      background: var(--border);
-      border-radius: 9999px;
-      overflow: hidden;
+      z-index: 2;
     }
-    .loop-progress-bar {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 20%;
-      border-radius: 9999px;
-      background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.35), var(--accent));
-      animation: loopProgress 7.5s linear infinite;
-    }
-    .loop-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-    }
-    .loop-flow .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0.35;
-      animation: loopDotPulse 7.5s ease-in-out infinite;
-    }
-    .loop-flow .dot:nth-child(1) { animation-delay: 0s; }
-    .loop-flow .dot:nth-child(3) { animation-delay: 2.5s; }
-    .loop-flow .dot:nth-child(5) { animation-delay: 5s; }
 
-    @keyframes loopStepPulse {
-      0%, 18%, 100% {
-        border-color: var(--step-border);
-        background: var(--bg);
-        box-shadow: none;
-        transform: translateY(0);
-      }
-      4%, 14% {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-        box-shadow: 0 0 0 4px var(--accent-ring), 0 10px 22px rgba(var(--accent-rgb), 0.16);
-        transform: translateY(-3px);
-      }
+    .orbit-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 360px;
+      margin: 0 auto;
     }
-    @keyframes loopNumPulse {
-      0%, 18%, 100% {
-        transform: scale(1);
-        box-shadow: none;
-      }
-      4%, 14% {
-        transform: scale(1.12);
-        box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.22);
-      }
+    .orbit-stage svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
     }
-    @keyframes loopProgress {
-      0% { left: 0%; width: 18%; }
-      20% { left: 20%; width: 18%; }
-      40% { left: 40%; width: 18%; }
-      60% { left: 60%; width: 18%; }
-      80% { left: 80%; width: 18%; }
-      100% { left: 100%; width: 0%; }
+    .orbit-ring {
+      fill: none;
+      stroke: rgba(91, 91, 214, 0.18);
+      stroke-width: 1.25;
+      stroke-dasharray: 6 10;
+      transform-origin: 200px 200px;
     }
-    @keyframes loopDotPulse {
+    .orbit-ring.r1 { animation: orbitSpin 36s linear infinite; }
+    .orbit-ring.r2 { animation: orbitSpin 28s linear infinite reverse; stroke: rgba(91, 91, 214, 0.28); stroke-dasharray: 3 8; }
+    .orbit-ring.r3 { animation: orbitSpin 48s linear infinite; stroke: rgba(91, 91, 214, 0.12); stroke-dasharray: 1 14; }
+
+    .orbit-beam {
+      fill: none;
+      stroke: url(#beamGrad);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-dasharray: 40 220;
+      animation: beamFlow 4.8s linear infinite;
+      filter: url(#softGlow);
+    }
+
+    .orbit-core {
+      fill: url(#coreGrad);
+      filter: url(#softGlow);
+      animation: corePulse 3.6s ease-in-out infinite;
+      transform-origin: 200px 200px;
+    }
+    .orbit-core-ring {
+      fill: none;
+      stroke: rgba(91, 91, 214, 0.45);
+      stroke-width: 1.5;
+      animation: corePulse 3.6s ease-in-out infinite;
+      transform-origin: 200px 200px;
+    }
+    .orbit-core-label {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 700;
+      fill: #fff;
+      text-anchor: middle;
+      dominant-baseline: central;
+      letter-spacing: 0.06em;
+    }
+
+    .orbit-node-group { transform-origin: 200px 200px; }
+    .orbit-node {
+      fill: #fff;
+      stroke: var(--accent);
+      stroke-width: 2;
+      filter: drop-shadow(0 4px 10px rgba(91, 91, 214, 0.18));
+      transition: fill 0.25s ease, stroke-width 0.25s ease;
+    }
+    .orbit-node.is-lit {
+      fill: var(--accent);
+      stroke-width: 2.5;
+    }
+    .orbit-node-num {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: central;
+      fill: var(--accent);
+      pointer-events: none;
+    }
+    .orbit-node.is-lit + .orbit-node-num,
+    .orbit-node-group.is-lit .orbit-node-num { fill: #fff; }
+    .orbit-node-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      fill: var(--text);
+      text-anchor: middle;
+    }
+    .orbit-node-en {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      font-weight: 500;
+      fill: var(--text-tertiary);
+      text-anchor: middle;
+    }
+
+    .orbit-traveler {
+      fill: #fff;
+      stroke: var(--accent);
+      stroke-width: 2;
+      filter: url(#softGlow);
+    }
+    .orbit-traveler-halo {
+      fill: rgba(91, 91, 214, 0.22);
+      animation: travelerHalo 1.8s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .spotlight-follow {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(circle, rgba(91, 91, 214, 0.16), transparent 70%);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+    .hero-visual.is-hot .spotlight-follow { opacity: 1; }
+
+    @keyframes orbitSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes beamFlow {
+      to { stroke-dashoffset: -260; }
+    }
+    @keyframes corePulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.06); opacity: 0.92; }
+    }
+    @keyframes travelerHalo {
       0%, 100% { opacity: 0.35; transform: scale(1); }
-      10%, 20% { opacity: 1; transform: scale(1.35); }
-      30% { opacity: 0.35; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.25); }
     }
 
     /* Problem */
@@ -642,21 +718,15 @@
         opacity: 1;
         transform: none;
       }
-      .loop-step,
-      .loop-step .num,
-      .loop-progress-bar,
-      .loop-flow .dot {
+      .hero-mesh .blob,
+      .orbit-ring,
+      .orbit-beam,
+      .orbit-core,
+      .orbit-core-ring,
+      .orbit-traveler-halo {
         animation: none !important;
       }
-      .loop-step:nth-child(3) {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-        box-shadow: 0 0 0 4px var(--accent-ring);
-      }
-      .loop-progress-bar {
-        left: 40%;
-        width: 18%;
-      }
+      .spotlight-follow { display: none; }
     }
 
     @media (max-width: 900px) {
@@ -669,8 +739,7 @@
     @media (max-width: 600px) {
       body { font-size: 15px; }
       .section { padding: 48px 0; }
-      .loop-diagram { grid-template-columns: 1fr 1fr; }
-      .loop-diagram .loop-step:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; }
+      .orbit-stage { max-height: 300px; }
       .nav-links a:not(.nav-priority) { display: none; }
       .nav-links { gap: 4px; }
       .hero-actions { flex-direction: column; width: 100%; }
@@ -680,14 +749,6 @@
       .checklist { padding: 4px 16px; }
       .install-box { padding: 20px; }
     }
-
-    /* Hero particle field */
-    .hero { position: relative; overflow: hidden; isolation: isolate; }
-    .hero > .container { position: relative; z-index: 1; }
-    #absorb-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-    .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-      background: radial-gradient(60% 60% at 75% 45%, rgba(var(--accent-rgb),0.10), transparent 70%); }
-    .hero-hint { margin-top: 14px; font-size: 12px; color: var(--text-tertiary); }
   </style>
 </head>
 <body>
@@ -717,7 +778,11 @@
   </nav>
 
   <header class="hero" id="top" data-section="hero">
-    <canvas id="absorb-canvas" aria-hidden="true"></canvas>
+    <div class="hero-mesh" aria-hidden="true">
+      <div class="blob blob-a"></div>
+      <div class="blob blob-b"></div>
+      <div class="blob blob-c"></div>
+    </div>
     <div class="container hero-grid">
       <div>
         <span class="badge">开源 Skill · MIT</span>
@@ -729,40 +794,86 @@
           <a class="btn btn-primary" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">查看 GitHub</a>
           <a class="btn btn-secondary" href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/skills/absorption-learning-coach/SKILL.md" target="_blank" rel="noopener noreferrer">打开 SKILL.md</a>
         </div>
-        <p class="hero-hint">移动鼠标吸附知识碎片，点击释放冲击波</p>
       </div>
-      <div class="hero-visual reveal" aria-hidden="false">
-        <div class="hero-visual-title">五步吸收环 · Absorption Loop</div>
-        <div class="loop-diagram">
-          <div class="loop-step">
-            <div class="num">1</div>
-            <div class="label">拆解<span class="en">Split</span></div>
-          </div>
-          <div class="loop-step">
-            <div class="num">2</div>
-            <div class="label">价值<span class="en">Value</span></div>
-          </div>
-          <div class="loop-step">
-            <div class="num">3</div>
-            <div class="label">闭卷<span class="en">Recall</span></div>
-          </div>
-          <div class="loop-step">
-            <div class="num">4</div>
-            <div class="label">迁移<span class="en">Transfer</span></div>
-          </div>
-          <div class="loop-step">
-            <div class="num">5</div>
-            <div class="label">反驳<span class="en">Rebuttal</span></div>
-          </div>
-        </div>
-        <div class="loop-progress" aria-hidden="true"><div class="loop-progress-bar"></div></div>
-        <div class="loop-flow">
-          <span class="dot"></span>
-          <span>预测</span>
-          <span class="dot"></span>
-          <span>判断</span>
-          <span class="dot"></span>
-          <span>回忆</span>
+      <div class="hero-visual reveal" id="orbit-card" aria-label="五步吸收环示意">
+        <div class="spotlight-follow" id="orbit-spot" aria-hidden="true"></div>
+        <div class="hero-visual-title">五步吸收环 · 知识沿轨道被吸收</div>
+        <div class="orbit-stage">
+          <svg viewBox="-8 -8 416 416" role="img" aria-labelledby="orbit-title">
+            <title id="orbit-title">吸收环：拆解、价值、闭卷、迁移、反驳</title>
+            <defs>
+              <radialGradient id="coreGrad" cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#8b8bf0"/>
+                <stop offset="55%" stop-color="#5b5bd6"/>
+                <stop offset="100%" stop-color="#3f3fad"/>
+              </radialGradient>
+              <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="rgba(91,91,214,0)"/>
+                <stop offset="40%" stop-color="rgba(91,91,214,0.15)"/>
+                <stop offset="50%" stop-color="#ffffff"/>
+                <stop offset="60%" stop-color="rgba(91,91,214,0.55)"/>
+                <stop offset="100%" stop-color="rgba(91,91,214,0)"/>
+              </linearGradient>
+              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="b"/>
+                <feMerge>
+                  <feMergeNode in="b"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- orbits -->
+            <ellipse class="orbit-ring r3" cx="200" cy="200" rx="168" ry="168"/>
+            <ellipse class="orbit-ring r1" cx="200" cy="200" rx="132" ry="132"/>
+            <ellipse class="orbit-ring r2" cx="200" cy="200" rx="96" ry="96"/>
+
+            <!-- traveling beam on middle orbit -->
+            <circle class="orbit-beam" cx="200" cy="200" r="132"/>
+
+            <!-- center core -->
+            <circle class="orbit-core" cx="200" cy="200" r="34"/>
+            <circle class="orbit-core-ring" cx="200" cy="200" r="42"/>
+            <text class="orbit-core-label" x="200" y="200">吸收</text>
+
+            <!-- five nodes (angles: -90, -18, 54, 126, 198 deg) -->
+            <g class="orbit-node-group" data-i="0" transform="translate(200,68)">
+              <circle class="orbit-node" r="16"/>
+              <text class="orbit-node-num" y="1">1</text>
+              <text class="orbit-node-label" y="34">拆解</text>
+              <text class="orbit-node-en" y="48">Split</text>
+            </g>
+            <g class="orbit-node-group" data-i="1" transform="translate(325.5,159.2)">
+              <circle class="orbit-node" r="16"/>
+              <text class="orbit-node-num" y="1">2</text>
+              <text class="orbit-node-label" y="34">价值</text>
+              <text class="orbit-node-en" y="48">Value</text>
+            </g>
+            <g class="orbit-node-group" data-i="2" transform="translate(277.5,310.8)">
+              <circle class="orbit-node" r="16"/>
+              <text class="orbit-node-num" y="1">3</text>
+              <text class="orbit-node-label" y="34">闭卷</text>
+              <text class="orbit-node-en" y="48">Recall</text>
+            </g>
+            <g class="orbit-node-group" data-i="3" transform="translate(122.5,310.8)">
+              <circle class="orbit-node" r="16"/>
+              <text class="orbit-node-num" y="1">4</text>
+              <text class="orbit-node-label" y="34">迁移</text>
+              <text class="orbit-node-en" y="48">Transfer</text>
+            </g>
+            <g class="orbit-node-group" data-i="4" transform="translate(74.5,159.2)">
+              <circle class="orbit-node" r="16"/>
+              <text class="orbit-node-num" y="1">5</text>
+              <text class="orbit-node-label" y="34">反驳</text>
+              <text class="orbit-node-en" y="48">Rebuttal</text>
+            </g>
+
+            <!-- traveler bead -->
+            <g id="orbit-traveler" transform="translate(200,68)">
+              <circle class="orbit-traveler-halo" cx="0" cy="0" r="14"/>
+              <circle class="orbit-traveler" cx="0" cy="0" r="6"/>
+            </g>
+          </svg>
         </div>
       </div>
     </div>
@@ -1041,50 +1152,58 @@
         }, { threshold: 0.35 });
         sections.forEach(function (s) { sio.observe(s); });
       }
+
+      /* Orbital traveler + soft spotlight (premium hero highlight) */
+      var card = document.getElementById('orbit-card');
+      var traveler = document.getElementById('orbit-traveler');
+      var spot = document.getElementById('orbit-spot');
+      var nodes = card ? card.querySelectorAll('.orbit-node-group') : [];
+      if (card && traveler && !reduce) {
+        var cx = 200, cy = 200, R = 132;
+        var angles = [-Math.PI / 2];
+        for (var k = 1; k < 5; k++) angles.push(-Math.PI / 2 + k * (Math.PI * 2 / 5));
+        var start = performance.now();
+        var period = 8000;
+        function tick(now) {
+          var t = ((now - start) % period) / period;
+          var ang = -Math.PI / 2 + t * Math.PI * 2;
+          var x = cx + Math.cos(ang) * R;
+          var y = cy + Math.sin(ang) * R;
+          traveler.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+          var nearest = 0, best = 99;
+          for (var i = 0; i < angles.length; i++) {
+            var d = Math.abs(((ang - angles[i] + Math.PI) % (Math.PI * 2)) - Math.PI);
+            if (d < best) { best = d; nearest = i; }
+          }
+          nodes.forEach(function (n, i) {
+            var on = i === nearest && best < 0.35;
+            n.classList.toggle('is-lit', on);
+            var c = n.querySelector('.orbit-node');
+            if (c) c.classList.toggle('is-lit', on);
+          });
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+
+        card.addEventListener('pointermove', function (e) {
+          var b = card.getBoundingClientRect();
+          spot.style.left = (e.clientX - b.left) + 'px';
+          spot.style.top = (e.clientY - b.top) + 'px';
+          card.classList.add('is-hot');
+        });
+        card.addEventListener('pointerleave', function () {
+          card.classList.remove('is-hot');
+        });
+      } else if (traveler) {
+        traveler.setAttribute('transform', 'translate(200,68)');
+        if (nodes[0]) {
+          nodes[0].classList.add('is-lit');
+          var c0 = nodes[0].querySelector('.orbit-node');
+          if (c0) c0.classList.add('is-lit');
+        }
+      }
     })();
   </script>
 
-  <script>
-  (function(){
-    var cv=document.getElementById('absorb-canvas'); if(!cv) return;
-    var hero=cv.parentElement, ctx=cv.getContext('2d');
-    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var W,H,dpr=Math.min(devicePixelRatio||1,2),P=[],mouse={x:-9999,y:-9999,on:false},waves=[];
-    var words=['结论','例子','闭卷','迁移','反驳','缺口','回忆','判断','Recall','Eval'];
-    var t0=performance.now();
-    function size(){W=hero.clientWidth;H=hero.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
-    function init(){size();P=[];var n=Math.min(150,Math.floor(W*H/7000));
-      for(var i=0;i<n;i++){var a=i/n*Math.PI*2;P.push({x:Math.random()*W,y:Math.random()*H,vx:0,vy:0,
-        ra:a,r:Math.random()*1.8+1,w:i%9===0?words[i%words.length]:null});}}
-    function ring(){var cx=W>900?W*0.72:W/2, cy=W>900?H*0.5:H*0.78, R=Math.min(W,H)*0.26;return{cx:cx,cy:cy,R:R};}
-    addEventListener('resize',init);
-    hero.addEventListener('pointermove',function(e){var b=hero.getBoundingClientRect();mouse.x=e.clientX-b.left;mouse.y=e.clientY-b.top;mouse.on=true;});
-    hero.addEventListener('pointerleave',function(){mouse.on=false;});
-    hero.addEventListener('click',function(e){var b=hero.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;
-      waves.push({x:x,y:y,r:0});P.forEach(function(p){var dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy)+1;var f=Math.min(18,2200/d);p.vx+=dx/d*f;p.vy+=dy/d*f;});});
-    function frame(now){
-      var t=(now-t0)/1000, g=ring();
-      ctx.clearRect(0,0,W,H);
-      // first 2.6s and every 14s: converge into the absorption ring
-      var phase=t%14, pull=(t<3.2||phase>10.5)?1:0;
-      for(var i=0;i<P.length;i++){var p=P[i];
-        if(pull){var a=p.ra+t*0.35,tx=g.cx+Math.cos(a)*g.R,ty=g.cy+Math.sin(a)*g.R*0.9;p.vx+=(tx-p.x)*0.012;p.vy+=(ty-p.y)*0.012;}
-        else{p.vx+=Math.sin(t*0.6+i)*0.02;p.vy+=Math.cos(t*0.5+i*1.3)*0.02;}
-        if(mouse.on){var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.hypot(dx,dy);if(d<200&&d>18){p.vx+=dx/d*0.55;p.vy+=dy/d*0.55;}}
-        p.vx*=0.9;p.vy*=0.9;p.x+=p.vx;p.y+=p.vy;
-        if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;}
-      // links
-      for(var i=0;i<P.length;i++)for(var j=i+1;j<P.length;j++){var a=P[i],b=P[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
-        if(d2<6400){ctx.strokeStyle='rgba(91,91,214,'+(0.22*(1-d2/6400))+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
-      if(mouse.on){P.forEach(function(p){var d=Math.hypot(mouse.x-p.x,mouse.y-p.y);if(d<200){ctx.strokeStyle='rgba(91,91,214,'+(0.35*(1-d/200))+')';ctx.beginPath();ctx.moveTo(mouse.x,mouse.y);ctx.lineTo(p.x,p.y);ctx.stroke();}});
-        var gr=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,90);gr.addColorStop(0,'rgba(91,91,214,0.25)');gr.addColorStop(1,'rgba(91,91,214,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(mouse.x,mouse.y,90,0,7);ctx.fill();}
-      P.forEach(function(p){ctx.fillStyle='rgba(91,91,214,0.75)';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();
-        if(p.w){ctx.font='600 12px Noto Sans SC, sans-serif';ctx.fillStyle='rgba(74,74,192,0.55)';ctx.fillText(p.w,p.x+6,p.y-6);}});
-      waves=waves.filter(function(w){w.r+=9;var al=1-w.r/420;if(al<=0)return false;ctx.strokeStyle='rgba(91,91,214,'+al*0.6+')';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,7);ctx.stroke();return true;});
-      if(!reduce) requestAnimationFrame(frame);
-    }
-    init(); requestAnimationFrame(frame);
-  })();
-  </script>
 </body>
 </html>
