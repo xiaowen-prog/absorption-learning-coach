@@ -276,77 +276,12 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-    /* Hero atmospheric mesh */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hero-mesh {
-      position: absolute;
-      inset: -20% -10%;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .hero-mesh .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(64px);
-      opacity: 0.55;
-      will-change: transform;
-    }
-    .hero-mesh .blob-a {
-      width: 48%;
-      height: 58%;
-      left: -8%;
-      top: -12%;
-      background: radial-gradient(circle, rgba(91, 91, 214, 0.45), transparent 70%);
-      animation: meshDriftA 22s ease-in-out infinite alternate;
-    }
-    .hero-mesh .blob-b {
-      width: 42%;
-      height: 50%;
-      right: -6%;
-      top: 8%;
-      background: radial-gradient(circle, rgba(120, 140, 255, 0.38), transparent 70%);
-      animation: meshDriftB 28s ease-in-out infinite alternate;
-    }
-    .hero-mesh .blob-c {
-      width: 36%;
-      height: 40%;
-      left: 32%;
-      bottom: -18%;
-      background: radial-gradient(circle, rgba(47, 158, 116, 0.18), transparent 70%);
-      animation: meshDriftC 26s ease-in-out infinite alternate;
-    }
-    @keyframes meshDriftA {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(8%, 10%) scale(1.08); }
-    }
-    @keyframes meshDriftB {
-      0% { transform: translate(0, 0) scale(1.05); }
-      100% { transform: translate(-10%, 6%) scale(0.95); }
-    }
-    @keyframes meshDriftC {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(6%, -8%) scale(1.1); }
-    }
-
-    .hero > .container { position: relative; z-index: 1; }
-
     .hero-visual {
-      background: rgba(255, 255, 255, 0.72);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 20px 16px 16px;
-      box-shadow:
-        0 1px 2px rgba(var(--text-rgb), 0.04),
-        0 24px 48px rgba(var(--accent-rgb), 0.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
+      border-radius: 20px;
+      padding: 28px 20px;
+      box-shadow: 0 8px 24px rgba(var(--text-rgb), 0.06);
     }
     .hero-visual-title {
       text-align: center;
@@ -354,245 +289,67 @@
       font-weight: 600;
       color: var(--text-tertiary);
       letter-spacing: 0.04em;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 2;
+      margin-bottom: 20px;
     }
 
-    .orbit-stage {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      max-height: 360px;
-      margin: 0 auto;
-    }
-    .orbit-stage svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      overflow: visible;
-    }
-    .orbit-ring {
-      fill: none;
-      stroke: rgba(91, 91, 214, 0.18);
-      stroke-width: 1.25;
-      stroke-dasharray: 6 10;
-      transform-origin: 200px 200px;
-    }
-    .orbit-ring.r1 { animation: orbitSpin 36s linear infinite; }
-    .orbit-ring.r2 { animation: orbitSpin 28s linear infinite reverse; stroke: rgba(91, 91, 214, 0.28); stroke-dasharray: 3 8; }
-    .orbit-ring.r3 { animation: orbitSpin 48s linear infinite; stroke: rgba(91, 91, 214, 0.12); stroke-dasharray: 1 14; }
-
-    .orbit-beam {
-      fill: none;
-      stroke: url(#beamGrad);
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-dasharray: 40 220;
-      animation: beamFlow 4.8s linear infinite;
-      filter: url(#softGlow);
-    }
-
-    .orbit-core {
-      fill: url(#coreGrad);
-      filter: url(#softGlow);
-      animation: corePulse 3.6s ease-in-out infinite;
-      transform-origin: 200px 200px;
-    }
-    .orbit-core-ring {
-      fill: none;
-      stroke: rgba(91, 91, 214, 0.45);
-      stroke-width: 1.5;
-      animation: corePulse 3.6s ease-in-out infinite;
-      transform-origin: 200px 200px;
-    }
-    .orbit-core-label {
-      font-family: var(--font-sans);
-      font-size: 15px;
-      font-weight: 700;
-      fill: #fff;
-      text-anchor: middle;
-      dominant-baseline: central;
-      letter-spacing: 0.06em;
-    }
-
-    .orbit-node-group { transform-origin: 200px 200px; }
-    .orbit-node {
-      fill: #fff;
-      stroke: var(--accent);
-      stroke-width: 2;
-      filter: drop-shadow(0 4px 10px rgba(91, 91, 214, 0.18));
-      transition: fill 0.25s ease, stroke-width 0.25s ease;
-    }
-    .orbit-node.is-lit {
-      fill: var(--accent);
-      stroke-width: 2.5;
-    }
-    .orbit-node-num {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 700;
-      text-anchor: middle;
-      dominant-baseline: central;
-      fill: var(--accent);
-      pointer-events: none;
-    }
-    .orbit-node.is-lit + .orbit-node-num,
-    .orbit-node-group.is-lit .orbit-node-num { fill: #fff; }
-    .orbit-node-label {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 600;
-      fill: var(--text);
-      text-anchor: middle;
-    }
-    .orbit-node-en {
-      font-family: var(--font-sans);
-      font-size: 9px;
-      font-weight: 500;
-      fill: var(--text-tertiary);
-      text-anchor: middle;
-    }
-
-    .orbit-traveler {
-      fill: #fff;
-      stroke: var(--accent);
-      stroke-width: 2;
-      filter: url(#softGlow);
-    }
-    .orbit-traveler-halo {
-      fill: rgba(91, 91, 214, 0.22);
-      animation: travelerHalo 1.8s ease-in-out infinite;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-
-
-
-    /* Evervault spotlight (Evervault × Codrops) */
-    .evervault {
-      --x: 50%;
-      --y: 50%;
-      position: relative;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #12131c;
-      aspect-ratio: 1 / 1;
-      max-height: 360px;
-      margin: 0 auto;
-      isolation: isolate;
-      cursor: crosshair;
-    }
-    .evervault-deco {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      padding: 6px;
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      line-height: 1.15;
-      word-break: break-all;
-      color: rgba(255,255,255,0.95);
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      pointer-events: none;
-      user-select: none;
-      -webkit-mask-image: radial-gradient(190px circle at var(--x) var(--y), #000 18%, rgba(0,0,0,0.3) 42%, transparent 72%);
-      mask-image: radial-gradient(190px circle at var(--x) var(--y), #000 18%, rgba(0,0,0,0.3) 42%, transparent 72%);
-    }
-    .evervault.is-active .evervault-deco { opacity: 1; }
-    .evervault::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      background: radial-gradient(
-        circle at var(--x) var(--y),
-        rgba(18,19,28,0.1) 0%,
-        rgba(91,91,214,0.55) 26%,
-        rgba(142,100,255,0.8) 46%,
-        rgba(47,158,116,0.4) 60%,
-        rgba(18,19,28,0.95) 78%
-      );
-      mix-blend-mode: color-dodge;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-    }
-    .evervault.is-active::after { opacity: 1; }
-    .evervault-stage {
-      position: relative;
-      z-index: 3;
-      width: 100%;
-      height: 100%;
+    .loop-diagram {
       display: grid;
-      place-items: center;
-      pointer-events: none;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
     }
-    .evervault-stage svg {
-      width: 90%;
-      height: 90%;
-      display: block;
-      overflow: visible;
-      filter: drop-shadow(0 10px 28px rgba(0,0,0,0.4));
+    .loop-step {
+      background: var(--bg);
+      border: 1.5px solid var(--step-border);
+      border-radius: 12px;
+      padding: 12px 6px;
+      text-align: center;
+      position: relative;
     }
-    .evervault .orbit-ring { stroke: rgba(255,255,255,0.22); }
-    .evervault .orbit-ring.r2 { stroke: rgba(180,180,255,0.38); }
-    .evervault .orbit-ring.r3 { stroke: rgba(255,255,255,0.12); }
-    .evervault .orbit-node { fill: rgba(255,255,255,0.96); stroke: #a5a5f5; }
-    .evervault .orbit-node.is-lit { fill: #5b5bd6; stroke: #fff; }
-    .evervault .orbit-node-num { fill: #5b5bd6; }
-    .evervault .orbit-node-group.is-lit .orbit-node-num { fill: #fff; }
-    .evervault .orbit-node-label { fill: rgba(255,255,255,0.92); }
-    .evervault .orbit-node-en { fill: rgba(255,255,255,0.45); }
-    .evervault .orbit-traveler { fill: #fff; stroke: #c4c4ff; }
-    .evervault .orbit-traveler-halo { fill: rgba(165,165,245,0.35); }
-
-    .magnetic-wrap {
+    .loop-step .num {
       display: inline-flex;
-      padding: 28px;
-      margin: -28px;
-      border-radius: 9999px;
-      touch-action: manipulation;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
     }
-    .btn-magnetic {
-      will-change: transform;
-      transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease;
-      position: relative;
-      overflow: hidden;
+    .loop-step .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
     }
-    .btn-magnetic .btn-label {
-      display: inline-block;
-      will-change: transform;
-      transition: transform 0.18s cubic-bezier(.2,.8,.2,1);
-      position: relative;
-      z-index: 1;
+    .loop-step .en {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      margin-top: 2px;
     }
-    .btn-magnetic .btn-shine {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-      background: radial-gradient(120px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.38), transparent 55%);
+    .loop-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
     }
-    .btn-magnetic.is-hot .btn-shine { opacity: 1; }
-
-    @keyframes orbitSpin {
-      to { transform: rotate(360deg); }
+    .loop-flow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
     }
-    @keyframes beamFlow {
-      to { stroke-dashoffset: -260; }
-    }
-    @keyframes corePulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.06); opacity: 0.92; }
-    }
-    @keyframes travelerHalo {
-      0%, 100% { opacity: 0.35; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.25); }
-    }
+    .loop-flow .dot:nth-child(3) { opacity: 0.75; }
+    .loop-flow .dot:nth-child(5) { opacity: 1; }
 
     /* Problem */
     .problem-item {
@@ -815,17 +572,6 @@
         opacity: 1;
         transform: none;
       }
-      .hero-mesh .blob,
-      .orbit-ring,
-      .orbit-beam,
-      .orbit-core,
-      .orbit-core-ring,
-      .orbit-traveler-halo {
-        animation: none !important;
-      }
-      .evervault-deco,
-      .evervault::after { opacity: 0 !important; }
-      .magnetic-wrap, .btn-magnetic, .btn-magnetic .btn-label { transform: none !important; }
     }
 
     @media (max-width: 900px) {
@@ -838,7 +584,8 @@
     @media (max-width: 600px) {
       body { font-size: 15px; }
       .section { padding: 48px 0; }
-      .evervault { max-height: 300px; }
+      .loop-diagram { grid-template-columns: 1fr 1fr; }
+      .loop-diagram .loop-step:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; }
       .nav-links a:not(.nav-priority) { display: none; }
       .nav-links { gap: 4px; }
       .hero-actions { flex-direction: column; width: 100%; }
@@ -877,11 +624,6 @@
   </nav>
 
   <header class="hero" id="top" data-section="hero">
-    <div class="hero-mesh" aria-hidden="true">
-      <div class="blob blob-a"></div>
-      <div class="blob blob-b"></div>
-      <div class="blob blob-c"></div>
-    </div>
     <div class="container hero-grid">
       <div>
         <span class="badge">开源 Skill · MIT</span>
@@ -890,93 +632,41 @@
           给 AI 导师的可复用教练配方：用闭卷回忆、场景迁移与疲劳降档，最大化文章与视频的<strong style="color: var(--text); font-weight: 600;">吸收</strong>，而不是堆阅读量或倾倒答案。
         </p>
         <div class="hero-actions">
-          <span class="magnetic-wrap" data-magnetic>
-            <a class="btn btn-primary btn-magnetic" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer"><span class="btn-shine" aria-hidden="true"></span><span class="btn-label">查看 GitHub</span></a>
-          </span>
+          <a class="btn btn-primary" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">查看 GitHub</a>
           <a class="btn btn-secondary" href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/skills/absorption-learning-coach/SKILL.md" target="_blank" rel="noopener noreferrer">打开 SKILL.md</a>
         </div>
       </div>
-      <div class="hero-visual reveal" id="orbit-card" aria-label="五步吸收环示意">
-        <div class="hero-visual-title">鼠标移入探索 · Evervault 式聚光吸收</div>
-        <div class="evervault" id="evervault" style="--x:50%;--y:50%;">
-          <div class="evervault-deco" id="evervault-deco" aria-hidden="true"></div>
-          <div class="evervault-stage">
-            <svg viewBox="-8 -8 416 416" role="img" aria-labelledby="orbit-title">
-            <title id="orbit-title">吸收环：拆解、价值、闭卷、迁移、反驳</title>
-            <defs>
-              <radialGradient id="coreGrad" cx="50%" cy="40%" r="60%">
-                <stop offset="0%" stop-color="#8b8bf0"/>
-                <stop offset="55%" stop-color="#5b5bd6"/>
-                <stop offset="100%" stop-color="#3f3fad"/>
-              </radialGradient>
-              <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="rgba(91,91,214,0)"/>
-                <stop offset="40%" stop-color="rgba(91,91,214,0.15)"/>
-                <stop offset="50%" stop-color="#ffffff"/>
-                <stop offset="60%" stop-color="rgba(91,91,214,0.55)"/>
-                <stop offset="100%" stop-color="rgba(91,91,214,0)"/>
-              </linearGradient>
-              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="b"/>
-                <feMerge>
-                  <feMergeNode in="b"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-
-            <!-- orbits -->
-            <ellipse class="orbit-ring r3" cx="200" cy="200" rx="168" ry="168"/>
-            <ellipse class="orbit-ring r1" cx="200" cy="200" rx="132" ry="132"/>
-            <ellipse class="orbit-ring r2" cx="200" cy="200" rx="96" ry="96"/>
-
-            <!-- traveling beam on middle orbit -->
-            <circle class="orbit-beam" cx="200" cy="200" r="132"/>
-
-            <!-- center core -->
-            <circle class="orbit-core" cx="200" cy="200" r="34"/>
-            <circle class="orbit-core-ring" cx="200" cy="200" r="42"/>
-            <text class="orbit-core-label" x="200" y="200">吸收</text>
-
-            <!-- five nodes (angles: -90, -18, 54, 126, 198 deg) -->
-            <g class="orbit-node-group" data-i="0" transform="translate(200,68)">
-              <circle class="orbit-node" r="16"/>
-              <text class="orbit-node-num" y="1">1</text>
-              <text class="orbit-node-label" y="34">拆解</text>
-              <text class="orbit-node-en" y="48">Split</text>
-            </g>
-            <g class="orbit-node-group" data-i="1" transform="translate(325.5,159.2)">
-              <circle class="orbit-node" r="16"/>
-              <text class="orbit-node-num" y="1">2</text>
-              <text class="orbit-node-label" y="34">价值</text>
-              <text class="orbit-node-en" y="48">Value</text>
-            </g>
-            <g class="orbit-node-group" data-i="2" transform="translate(277.5,310.8)">
-              <circle class="orbit-node" r="16"/>
-              <text class="orbit-node-num" y="1">3</text>
-              <text class="orbit-node-label" y="34">闭卷</text>
-              <text class="orbit-node-en" y="48">Recall</text>
-            </g>
-            <g class="orbit-node-group" data-i="3" transform="translate(122.5,310.8)">
-              <circle class="orbit-node" r="16"/>
-              <text class="orbit-node-num" y="1">4</text>
-              <text class="orbit-node-label" y="34">迁移</text>
-              <text class="orbit-node-en" y="48">Transfer</text>
-            </g>
-            <g class="orbit-node-group" data-i="4" transform="translate(74.5,159.2)">
-              <circle class="orbit-node" r="16"/>
-              <text class="orbit-node-num" y="1">5</text>
-              <text class="orbit-node-label" y="34">反驳</text>
-              <text class="orbit-node-en" y="48">Rebuttal</text>
-            </g>
-
-            <!-- traveler bead -->
-            <g id="orbit-traveler" transform="translate(200,68)">
-              <circle class="orbit-traveler-halo" cx="0" cy="0" r="14"/>
-              <circle class="orbit-traveler" cx="0" cy="0" r="6"/>
-            </g>
-          </svg>
+      <div class="hero-visual reveal" aria-hidden="false">
+        <div class="hero-visual-title">五步吸收环 · Absorption Loop</div>
+        <div class="loop-diagram">
+          <div class="loop-step">
+            <div class="num">1</div>
+            <div class="label">拆解<span class="en">Split</span></div>
           </div>
+          <div class="loop-step">
+            <div class="num">2</div>
+            <div class="label">价值<span class="en">Value</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">3</div>
+            <div class="label">闭卷<span class="en">Recall</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">4</div>
+            <div class="label">迁移<span class="en">Transfer</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">5</div>
+            <div class="label">反驳<span class="en">Rebuttal</span></div>
+          </div>
+        </div>
+        <div class="loop-flow">
+          <span class="dot"></span>
+          <span>预测</span>
+          <span class="dot"></span>
+          <span>判断</span>
+          <span class="dot"></span>
+          <span>回忆</span>
         </div>
       </div>
     </div>
@@ -1255,111 +945,7 @@
         }, { threshold: 0.35 });
         sections.forEach(function (s) { sio.observe(s); });
       }
-
-      /* Absorption orbit traveler */
-      var card = document.getElementById('orbit-card');
-      var traveler = document.getElementById('orbit-traveler');
-      var nodes = card ? card.querySelectorAll('.orbit-node-group') : [];
-      if (traveler && !reduce) {
-        var cx = 200, cy = 200, R = 132;
-        var angles = [-Math.PI / 2];
-        for (var k = 1; k < 5; k++) angles.push(-Math.PI / 2 + k * (Math.PI * 2 / 5));
-        var t0 = performance.now();
-        var period = 8000;
-        (function tick(now) {
-          var t = ((now - t0) % period) / period;
-          var ang = -Math.PI / 2 + t * Math.PI * 2;
-          traveler.setAttribute('transform', 'translate(' + (cx + Math.cos(ang) * R) + ',' + (cy + Math.sin(ang) * R) + ')');
-          var nearest = 0, best = 99;
-          for (var i = 0; i < angles.length; i++) {
-            var d = Math.abs(((ang - angles[i] + Math.PI) % (Math.PI * 2)) - Math.PI);
-            if (d < best) { best = d; nearest = i; }
-          }
-          nodes.forEach(function (n, i) {
-            var on = i === nearest && best < 0.35;
-            n.classList.toggle('is-lit', on);
-            var c = n.querySelector('.orbit-node');
-            if (c) c.classList.toggle('is-lit', on);
-          });
-          requestAnimationFrame(tick);
-        })(t0);
-      } else if (traveler) {
-        traveler.setAttribute('transform', 'translate(200,68)');
-        if (nodes[0]) {
-          nodes[0].classList.add('is-lit');
-          var c0 = nodes[0].querySelector('.orbit-node');
-          if (c0) c0.classList.add('is-lit');
-        }
-      }
-
-      /* Evervault / Codrops gradient-mask spotlight */
-      var ev = document.getElementById('evervault');
-      var deco = document.getElementById('evervault-deco');
-      if (ev && deco && !reduce && window.matchMedia('(pointer:fine)').matches) {
-        var vocab = '吸收闭卷迁移反驳拆解价值缺口回忆判断SplitValueRecallTransferRebuttalEvalABCDEF0123456789';
-        function fillDeco() {
-          var s = '', n = 2400;
-          for (var i = 0; i < n; i++) s += vocab.charAt((Math.random() * vocab.length) | 0);
-          deco.textContent = s;
-        }
-        fillDeco();
-        var rx = 0.5, ry = 0.5, tx = 0.5, ty = 0.5, raf = 0, hovering = false;
-        function lerp(a, b, n) { return (1 - n) * a + n * b; }
-        function loop() {
-          raf = 0;
-          rx = lerp(rx, tx, 0.14);
-          ry = lerp(ry, ty, 0.14);
-          ev.style.setProperty('--x', (rx * 100).toFixed(2) + '%');
-          ev.style.setProperty('--y', (ry * 100).toFixed(2) + '%');
-          if (hovering) {
-            if (Math.random() < 0.4) fillDeco();
-            raf = requestAnimationFrame(loop);
-          }
-        }
-        ev.addEventListener('pointerenter', function () {
-          hovering = true;
-          ev.classList.add('is-active');
-          if (!raf) raf = requestAnimationFrame(loop);
-        });
-        ev.addEventListener('pointermove', function (e) {
-          var b = ev.getBoundingClientRect();
-          tx = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width));
-          ty = Math.min(1, Math.max(0, (e.clientY - b.top) / b.height));
-        });
-        ev.addEventListener('pointerleave', function () {
-          hovering = false;
-          ev.classList.remove('is-active');
-          tx = 0.5; ty = 0.5;
-        });
-      }
-
-      /* Magnetic CTA (Awwwards-style) */
-      document.querySelectorAll('[data-magnetic]').forEach(function (wrap) {
-        var btn = wrap.querySelector('.btn-magnetic');
-        if (!btn || reduce || !window.matchMedia('(pointer:fine)').matches) return;
-        var label = btn.querySelector('.btn-label');
-        var shine = btn.querySelector('.btn-shine');
-        wrap.addEventListener('pointermove', function (e) {
-          var r = wrap.getBoundingClientRect();
-          var x = e.clientX - r.left - r.width / 2;
-          var y = e.clientY - r.top - r.height / 2;
-          btn.style.transform = 'translate(' + (x * 0.3) + 'px,' + (y * 0.3) + 'px)';
-          if (label) label.style.transform = 'translate(' + (x * 0.14) + 'px,' + (y * 0.14) + 'px)';
-          if (shine) {
-            var br = btn.getBoundingClientRect();
-            shine.style.setProperty('--mx', (e.clientX - br.left) + 'px');
-            shine.style.setProperty('--my', (e.clientY - br.top) + 'px');
-            btn.classList.add('is-hot');
-          }
-        });
-        wrap.addEventListener('pointerleave', function () {
-          btn.style.transform = '';
-          if (label) label.style.transform = '';
-          btn.classList.remove('is-hot');
-        });
-      });
     })();
   </script>
-
 </body>
 </html>
