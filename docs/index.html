@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Absorption Learning Coach — 开源 AI 辅导技能：最大化文章与视频的吸收，而非堆阅读量。" />
+  <title>Absorption Learning Coach · 吸收学习教练</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --surface: #ffffff;
+      --surface-alt: #eef1f8;
+      --surface-hover: #e8ecf6;
+      --border: #d8dde8;
+      --border-hover: #b8c0d4;
+      --text: #1a1d26;
+      --text-secondary: #4a5160;
+      --text-tertiary: #7a8294;
+      --accent: #5b5bd6;
+      --accent-hover: #4a4ac0;
+      --accent-soft: rgba(91, 91, 214, 0.12);
+      --accent-ring: rgba(91, 91, 214, 0.28);
+      --bg-rgb: 247, 248, 252;
+      --accent-rgb: 91, 91, 214;
+      --text-rgb: 26, 29, 38;
+      --success: #2f9e74;
+      --error: #d14343;
+      --warning: #c97b2a;
+      --step-bg: var(--accent-soft);
+      --step-border: var(--accent-ring);
+      --font-sans: 'Noto Sans SC', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      --container: 1080px;
+      --narrow: 720px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      background: var(--bg);
+      overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg { max-width: 100%; display: block; }
+    h1, h2, h3 { color: var(--text); margin: 0 0 0.5em; line-height: 1.25; }
+    h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+    h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 700; letter-spacing: -0.01em; }
+    h3 { font-size: 18px; font-weight: 600; line-height: 1.35; }
+    p { margin: 0 0 1em; }
+    p:last-child { margin-bottom: 0; }
+    ul { margin: 0; padding: 0; list-style: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .narrow { max-width: var(--narrow); margin-left: auto; margin-right: auto; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(var(--bg-rgb), 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .nav.is-scrolled {
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom-color: var(--border);
+      box-shadow: 0 1px 0 rgba(var(--text-rgb), 0.04);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      gap: 16px;
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a.is-active {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .nav-links a:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-ring);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 12px 22px;
+      border-radius: 9999px;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-decoration: none;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(var(--accent-rgb), 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.28);
+    }
+    .btn-primary:active { transform: translateY(1px); }
+    .btn-primary:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-ring);
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--accent);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .btn-secondary:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-ring);
+    }
+
+    a.inline-link {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+    a.inline-link:hover { color: var(--accent-hover); }
+    a.inline-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-ring);
+      border-radius: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--step-border);
+    }
+
+    /* Sections */
+    .section {
+      padding: clamp(56px, 8vw, 96px) 0;
+    }
+    .section-alt { background: var(--surface-alt); }
+    .section-head {
+      margin-bottom: 36px;
+    }
+    .section-head p.lead {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 36em;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(var(--text-rgb), 0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 24px rgba(var(--text-rgb), 0.06);
+      transform: translateY(-2px);
+    }
+    .card h3 { margin-bottom: 8px; }
+    .card p { font-size: 15px; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .grid-tiers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: clamp(48px, 8vw, 88px) 0 clamp(56px, 8vw, 96px);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .hero-pitch {
+      font-size: clamp(16px, 2vw, 18px);
+      color: var(--text-secondary);
+      max-width: 34em;
+      margin-bottom: 28px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 20px;
+      box-shadow: 0 8px 24px rgba(var(--text-rgb), 0.06);
+    }
+    .hero-visual-title {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+
+    .loop-diagram {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .loop-step {
+      background: var(--bg);
+      border: 1.5px solid var(--step-border);
+      border-radius: 12px;
+      padding: 12px 6px;
+      text-align: center;
+      position: relative;
+    }
+    .loop-step .num {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .loop-step .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .loop-step .en {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .loop-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+    .loop-flow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .loop-flow .dot:nth-child(3) { opacity: 0.75; }
+    .loop-flow .dot:nth-child(5) { opacity: 1; }
+
+    /* Problem */
+    .problem-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .problem-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(209, 67, 67, 0.1);
+      color: var(--error);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .problem-item h3 { margin-bottom: 4px; }
+    .problem-item p { font-size: 15px; color: var(--text-secondary); }
+
+    /* Method steps */
+    .method-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .method-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 16px;
+      align-items: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .method-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .method-row h3 { margin-bottom: 4px; }
+    .method-row p { font-size: 15px; }
+
+    /* Checklist */
+    .checklist {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px 24px;
+      box-shadow: 0 1px 2px rgba(var(--text-rgb), 0.04);
+    }
+    .checklist li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist .mark {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      margin-top: 2px;
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .checklist .text strong {
+      display: block;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .checklist .text span {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    /* Living model */
+    .model-grid .card .label-sm {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    /* Install */
+    .install-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 1px 2px rgba(var(--text-rgb), 0.04);
+    }
+    .install-box ol {
+      margin: 0 0 20px;
+      padding-left: 1.25em;
+      color: var(--text-secondary);
+    }
+    .install-box ol li { margin-bottom: 8px; padding-left: 4px; }
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 40px 0 48px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    /* Progress dots */
+    .progress-dots {
+      position: fixed;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 90;
+    }
+    .progress-dots a {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      text-decoration: none;
+    }
+    .progress-dots a::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .progress-dots a.is-active::before,
+    .progress-dots a:hover::before {
+      background: var(--accent);
+      transform: scale(1.25);
+    }
+    .progress-dots a:focus-visible {
+      outline: none;
+    }
+    .progress-dots a:focus-visible::before {
+      box-shadow: 0 0 0 3px var(--accent-ring);
+    }
+
+    /* Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-stagger > *.reveal:nth-child(1) { transition-delay: 0.05s; }
+    .reveal-stagger > *.reveal:nth-child(2) { transition-delay: 0.12s; }
+    .reveal-stagger > *.reveal:nth-child(3) { transition-delay: 0.19s; }
+    .reveal-stagger > *.reveal:nth-child(4) { transition-delay: 0.26s; }
+    .reveal-stagger > *.reveal:nth-child(5) { transition-delay: 0.33s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .progress-dots { display: none; }
+      .grid-3, .grid-tiers { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .section { padding: 48px 0; }
+      .loop-diagram { grid-template-columns: 1fr 1fr; }
+      .loop-diagram .loop-step:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; }
+      .nav-links a:not(.nav-priority) { display: none; }
+      .nav-links { gap: 4px; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; }
+      .method-row { grid-template-columns: 40px 1fr; padding: 16px; }
+      .card { padding: 20px; }
+      .checklist { padding: 4px 16px; }
+      .install-box { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="主导航">
+    <div class="container nav-inner">
+      <a class="nav-brand" href="#top">吸收学习<span>教练</span></a>
+      <div class="nav-links">
+        <a href="#problem">问题</a>
+        <a href="#method">方法</a>
+        <a href="#tiers">分层</a>
+        <a href="#rules">规则</a>
+        <a href="#model">模型</a>
+        <a class="nav-priority" href="#install">安装</a>
+        <a class="nav-priority" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <nav class="progress-dots" aria-label="章节进度">
+    <a href="#top" data-target="hero" title="首页" aria-label="首页"></a>
+    <a href="#problem" data-target="problem" title="问题" aria-label="问题"></a>
+    <a href="#method" data-target="method" title="方法" aria-label="方法"></a>
+    <a href="#tiers" data-target="tiers" title="分层" aria-label="分层"></a>
+    <a href="#rules" data-target="rules" title="规则" aria-label="规则"></a>
+    <a href="#model" data-target="model" title="模型" aria-label="模型"></a>
+    <a href="#install" data-target="install" title="安装" aria-label="安装"></a>
+  </nav>
+
+  <header class="hero" id="top" data-section="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="badge">开源 Skill · MIT</span>
+        <h1 style="margin-top: 16px;">Absorption Learning Coach</h1>
+        <p class="hero-pitch">
+          给 AI 导师的可复用教练配方：用闭卷回忆、场景迁移与疲劳降档，最大化文章与视频的<strong style="color: var(--text); font-weight: 600;">吸收</strong>，而不是堆阅读量或倾倒答案。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">查看 GitHub</a>
+          <a class="btn btn-secondary" href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/skills/absorption-learning-coach/SKILL.md" target="_blank" rel="noopener noreferrer">打开 SKILL.md</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal" aria-hidden="false">
+        <div class="hero-visual-title">五步吸收环 · Absorption Loop</div>
+        <div class="loop-diagram">
+          <div class="loop-step">
+            <div class="num">1</div>
+            <div class="label">拆解<span class="en">Split</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">2</div>
+            <div class="label">价值<span class="en">Value</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">3</div>
+            <div class="label">闭卷<span class="en">Recall</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">4</div>
+            <div class="label">迁移<span class="en">Transfer</span></div>
+          </div>
+          <div class="loop-step">
+            <div class="num">5</div>
+            <div class="label">反驳<span class="en">Rebuttal</span></div>
+          </div>
+        </div>
+        <div class="loop-flow">
+          <span class="dot"></span>
+          <span>预测</span>
+          <span class="dot"></span>
+          <span>判断</span>
+          <span class="dot"></span>
+          <span>回忆</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section section-alt" id="problem" data-section="problem">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">问题 · Problem</div>
+        <h2>常见做法为什么学不进</h2>
+        <p class="lead">冷测与答案倾倒看起来高效，却常常只留下「好像听懂了」的错觉。</p>
+      </div>
+      <div class="grid-2 reveal-stagger">
+        <div class="card reveal">
+          <div class="problem-item">
+            <div class="problem-icon" aria-hidden="true">!</div>
+            <div>
+              <h3>冷测过早</h3>
+              <p>材料还没扫过，就凭口述摘要闭卷提问。缺口被误判成「记性差」，挫败感先于学习发生。</p>
+            </div>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="problem-item">
+            <div class="problem-icon" aria-hidden="true">≠</div>
+            <div>
+              <h3>答案倾倒</h3>
+              <p>贴出完整范例骨架再要求「按这个重做」。学习者会复制表面结构，判断力与回忆力几乎没练到。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method" data-section="method">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">方法 · Method</div>
+        <h2>五步吸收环</h2>
+        <p class="lead">一次处理一块材料。优先预测、判断与闭卷回忆；格式由教练决定，减少选择负担。</p>
+      </div>
+      <div class="method-list reveal-stagger">
+        <div class="method-row reveal">
+          <div class="method-num">1</div>
+          <div>
+            <h3>拆解 Split</h3>
+            <p>把来源拆成：结论 / 叙事线 / 关键决策 / 可复用方法 / 金句引用。</p>
+          </div>
+        </div>
+        <div class="method-row reveal">
+          <div class="method-num">2</div>
+          <div>
+            <h3>价值 Value</h3>
+            <p>用一句话说清：它为什么对学习者当前目标重要。</p>
+          </div>
+        </div>
+        <div class="method-row reveal">
+          <div class="method-num">3</div>
+          <div>
+            <h3>闭卷回忆 Closed-book recall</h3>
+            <p>合上笔记再测。若尚未扫过原文，先给短骨架或留出自读时间，再开测。</p>
+          </div>
+        </div>
+        <div class="method-row reveal">
+          <div class="method-num">4</div>
+          <div>
+            <h3>迁移 Transfer</h3>
+            <p>同一观念放进新场景：会不会用，比能不能复述更重要。</p>
+          </div>
+        </div>
+        <div class="method-row reveal">
+          <div class="method-num">5</div>
+          <div>
+            <h3>反驳 Rebuttal（可选）</h3>
+            <p>作者可能错在哪、漏了什么。锻炼批判而不只是认同。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="tiers" data-section="tiers">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">分层 · Tiers</div>
+        <h2>讲解深度 × 难度自适应</h2>
+        <p class="lead">卡住再升级；答得清就迁移与反驳。疲劳时降档，而不是硬扛。</p>
+      </div>
+
+      <h3 class="reveal" style="margin-bottom: 16px;">解释层级</h3>
+      <div class="grid-tiers reveal-stagger" style="margin-bottom: 36px;">
+        <div class="card reveal">
+          <span class="badge">Light</span>
+          <h3 style="margin-top: 12px;">轻量</h3>
+          <p>一行结论 + 一个熟悉例子。适合已有底子、只需对齐口径时。</p>
+        </div>
+        <div class="card reveal">
+          <span class="badge">Medium</span>
+          <h3 style="margin-top: 12px;">中等</h3>
+          <p>每个术语旁附白话释义；加一次复述检查，确认不是「听过」而已。</p>
+        </div>
+        <div class="card reveal">
+          <span class="badge">Full</span>
+          <h3 style="margin-top: 12px;">完整</h3>
+          <p>完整拆解，必要时配图示，再进入测验。始终先给一行结论，并用同一条贯穿例。</p>
+        </div>
+      </div>
+
+      <h3 class="reveal" style="margin-bottom: 16px;">难度自适应（自评）</h3>
+      <div class="grid-2 reveal-stagger">
+        <div class="card reveal">
+          <h3>高吸收 · 回答清晰</h3>
+          <p>直接上迁移 / 反驳题，拉开判断与迁移肌肉。</p>
+        </div>
+        <div class="card reveal">
+          <h3>中等 · 术语发糊</h3>
+          <p>点出术语，问含义 + 一个极小例子，再继续。</p>
+        </div>
+        <div class="card reveal">
+          <h3>低吸收 · 多次「忘了」</h3>
+          <p>降档：只回看错过的点，降低同时负荷。</p>
+        </div>
+        <div class="card reveal">
+          <h3>疲劳 / 需要休息</h3>
+          <p>自动降档，仍可学轻量项；明确需要休息时提醒暂停，避免无效硬磨。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="rules" data-section="rules">
+    <div class="container narrow">
+      <div class="section-head reveal">
+        <div class="eyebrow">规则 · Quiz Rules</div>
+        <h2>测验怎么问，才练到吸收</h2>
+        <p class="lead">规则比题量重要。下面四条是硬约束，避免「看起来在学、其实在抄」。</p>
+      </div>
+      <ul class="checklist reveal-stagger">
+        <li class="reveal">
+          <div class="mark" aria-hidden="true">✓</div>
+          <div class="text">
+            <strong>一次一题，选合适形式</strong>
+            <span>判断、简答、场景应用均可；由教练决定格式，不问学习者「你想用哪种」。</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="mark" aria-hidden="true">✓</div>
+          <div class="text">
+            <strong>只诊缺口，不贴完整骨架逼重做</strong>
+            <span>答完后给简短差距诊断。绝不粘贴整份模范答案再要求「按这个重写」——那会诱导复制。</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="mark" aria-hidden="true">✓</div>
+          <div class="text">
+            <strong>错题换新场景再探</strong>
+            <span>漏掉的点稍后放进新情境重测，而不是立刻原题重做。</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="mark" aria-hidden="true">✓</div>
+          <div class="text">
+            <strong>结束时给短吸收报告</strong>
+            <span>缺口列表 + 粗略吸收比例；不因一次侥幸答对就抬高评价。</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="mark" aria-hidden="true">✓</div>
+          <div class="text">
+            <strong>疲劳自动降档</strong>
+            <span>说累、读不动时降低负荷；仍可推进轻量项，但不要冷停或无效硬扛。</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="model" data-section="model">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">活模型 · Living Model</div>
+        <h2>持续更新的学习者状态</h2>
+        <p class="lead">教练不是固定脚本，而是根据吸收度、缺口、疲劳与有效形式，随时调整。</p>
+      </div>
+      <div class="grid-2 model-grid reveal-stagger">
+        <div class="card reveal">
+          <div class="label-sm">持续追踪</div>
+          <h3>活的学习者模型</h3>
+          <p>每篇材料的吸收度、待再探的缺口、疲劳信号、哪些表达形式真正有效——写进模型，据此改下一轮教练动作。</p>
+        </div>
+        <div class="card reveal">
+          <div class="label-sm">每周一次</div>
+          <h3>周复盘</h3>
+          <p>回顾对话，修订方法；把可沉淀的方法变更写入长期记忆，避免同一弯路反复踩。</p>
+        </div>
+      </div>
+      <div class="card reveal" style="margin-top: 20px;">
+        <h3 style="margin-bottom: 12px;">刻意不做的事</h3>
+        <ul style="list-style: disc; padding-left: 1.25em; color: var(--text-secondary); font-size: 15px;">
+          <li style="margin-bottom: 6px;">在专长缺口上从大而全的基础课重开</li>
+          <li style="margin-bottom: 6px;">用答案倾倒替代学习</li>
+          <li>当前材料闭卷仍弱时，并行塞入大量新文章</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="install" data-section="install">
+    <div class="container narrow">
+      <div class="section-head reveal">
+        <div class="eyebrow">安装 · Install</div>
+        <h2>两步开始用</h2>
+        <p class="lead">把 SKILL.md 放进你的 agent workflows（或等价 skills）目录，即可被辅导流程调用。</p>
+      </div>
+      <div class="install-box reveal">
+        <ol>
+          <li>打开仓库中的 <code>skills/absorption-learning-coach/SKILL.md</code></li>
+          <li>复制到本机 agent 的 workflows / skills 目录</li>
+          <li>在需要「深度阅读 / 视频吸收」的对话中启用该技能</li>
+        </ol>
+        <div class="code-block">cp skills/absorption-learning-coach/SKILL.md \
+  /path/to/your/agent/workflows/absorption-learning-coach/SKILL.md</div>
+        <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px;">
+          <a class="btn btn-primary" href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">打开仓库</a>
+          <a class="btn btn-secondary" href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/skills/absorption-learning-coach/SKILL.md" target="_blank" rel="noopener noreferrer">查看技能文件</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>MIT License · Copyright (c) 2026 xiaowen-prog</div>
+      <div>
+        <a href="https://github.com/xiaowen-prog/absorption-learning-coach" target="_blank" rel="noopener noreferrer">GitHub</a>
+        ·
+        <a href="https://github.com/xiaowen-prog/absorption-learning-coach/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">LICENSE</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var nav = document.querySelector('.nav');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function onScroll() {
+        if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 12);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      if (!reduce) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) e.target.classList.add('is-visible');
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+      } else {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+      }
+
+      var sections = Array.prototype.slice.call(document.querySelectorAll('[data-section]'));
+      var dots = Array.prototype.slice.call(document.querySelectorAll('.progress-dots a'));
+      if (sections.length && dots.length) {
+        var sio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var id = e.target.getAttribute('data-section');
+            dots.forEach(function (d) {
+              d.classList.toggle('is-active', d.getAttribute('data-target') === id);
+            });
+          });
+        }, { threshold: 0.35 });
+        sections.forEach(function (s) { sio.observe(s); });
+      }
+    })();
+  </script>
+</body>
+</html>
